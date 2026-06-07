@@ -1,0 +1,156 @@
+{
+  "stages": [
+    {
+      "name": "Анестезия",
+      "rules": [
+        {
+          "id": "ANEST_01",
+          "stage": "Анестезия",
+          "conditions": [{ "parameter": "боль", "operator": ">=", "value": 2, "description": "Боль ≥ 2+" }],
+          "action": { "description": "Ввести 0.1-0.2 мл лидокаина интракамерно или выждать 1 минуту" },
+          "risk_level": "внимание",
+          "description": "Недостаточная анестезия"
+        }
+      ]
+    },
+    {
+      "name": "Разрез",
+      "rules": [
+        {
+          "id": "RAZREZ_01",
+          "stage": "Разрез",
+          "conditions": [{ "parameter": "длина_разреза", "operator": ">", "value": 3.0, "description": "Длина разреза > 3.0 мм" }],
+          "action": { "description": "Зафиксировать риск астигматизма и нестабильности камеры" },
+          "risk_level": "внимание",
+          "description": "Слишком большой разрез"
+        }
+      ]
+    },
+    {
+      "name": "Капсулорексис",
+      "rules": [
+        {
+          "id": "KAPS_01",
+          "stage": "Капсулорексис",
+          "conditions": [{ "parameter": "диаметр_капсулорексиса", "operator": "<", "value": 4.5, "description": "Диаметр < 4.5 мм" }],
+          "action": { "description": "Зафиксировать риск децентрировки ИОЛ и повышенного внимания на следующих этапах" },
+          "risk_level": "внимание",
+          "description": "Слишком маленький капсулорексис"
+        },
+        {
+          "id": "KAPS_02",
+          "stage": "Капсулорексис",
+          "conditions": [{ "parameter": "диаметр_капсулорексиса", "operator": ">", "value": 6.0, "description": "Диаметр > 6.0 мм" }],
+          "action": { "description": "Зафиксировать риск децентрировки ИОЛ и повышенного внимания на следующих этапах" },
+          "risk_level": "внимание",
+          "description": "Слишком большой капсулорексис"
+        }
+      ]
+    },
+    {
+      "name": "Фрагментация ядра",
+      "rules": [
+        {
+          "id": "FRAG_01",
+          "stage": "Фрагментация ядра",
+          "conditions": [{ "parameter": "вакуум", "operator": ">", "value": 600, "description": "Вакуум > 600 мм рт.ст." }],
+          "action": { "description": "Снизить вакуум до ≤ 400 мм рт.ст." },
+          "risk_level": "внимание",
+          "description": "Высокий вакуум"
+        },
+        {
+          "id": "FRAG_02",
+          "stage": "Фрагментация ядра",
+          "conditions": [{ "parameter": "CDE", "operator": ">", "value": 35, "description": "CDE > 35 кДж" }],
+          "action": { "description": "СТОП УЗ, перейти в режим I/A, максимальная защита эндотелия" },
+          "risk_level": "критическое",
+          "description": "Превышение накопленной энергии"
+        },
+        {
+          "id": "FRAG_03",
+          "stage": "Фрагментация ядра",
+          "conditions": [{ "parameter": "температура", "operator": ">", "value": 40, "description": "Температура наконечника > 40°C" }],
+          "action": { "description": "СТОП УЗ, промыть камеру BSS, заменить наконечник" },
+          "risk_level": "критическое",
+          "description": "Перегрев наконечника"
+        }
+      ]
+    },
+    {
+      "name": "Аспирация кортекса",
+      "rules": [
+        {
+          "id": "ASP_01",
+          "stage": "Аспирация кортекса",
+          "conditions": [{ "parameter": "вакуум", "operator": ">", "value": 400, "description": "Вакуум > 400 мм рт.ст." }],
+          "action": { "description": "Снизить вакуум до 150-200 мм рт.ст." },
+          "risk_level": "внимание",
+          "description": "Высокий вакуум"
+        },
+        {
+          "id": "ASP_02",
+          "stage": "Аспирация кортекса",
+          "conditions": [{ "parameter": "разрыв_капсулы", "operator": "==", "value": true, "description": "Разрыв задней капсулы" }],
+          "action": { "description": "СТОП аспирация, снизить вакуум, подготовить витрэктомию" },
+          "risk_level": "критическое",
+          "description": "Разрыв капсулы"
+        }
+      ]
+    },
+    {
+      "name": "Имплантация ИОЛ",
+      "rules": [
+        {
+          "id": "IOL_01",
+          "stage": "Имплантация ИОЛ",
+          "conditions": [{ "parameter": "ВГД", "operator": ">", "value": 30, "description": "ВГД > 30 мм рт.ст." }],
+          "action": { "description": "Аспирировать излишек OVD через боковой порт" },
+          "risk_level": "внимание",
+          "description": "Повышенное давление"
+        },
+        {
+          "id": "IOL_02",
+          "stage": "Имплантация ИОЛ",
+          "conditions": [{ "parameter": "смещение_ИОЛ", "operator": ">", "value": 0.5, "description": "Смещение ИОЛ > 0.5 мм" }],
+          "action": { "description": "Выполнить репозицию ИОЛ" },
+          "risk_level": "внимание",
+          "description": "Смещение интраокулярной линзы"
+        }
+      ]
+    },
+    {
+      "name": "Герметизация",
+      "rules": [
+        {
+          "id": "HERM_01",
+          "stage": "Герметизация",
+          "conditions": [{ "parameter": "seidel_test", "operator": "==", "value": true, "description": "Тест Зейделя положительный" }],
+          "action": { "description": "Выполнить гидратацию краёв, при необходимости наложить шов 10-0" },
+          "risk_level": "критическое",
+          "description": "Утечка через разрез"
+        }
+      ]
+    },
+    {
+      "name": "Постоперационный контроль",
+      "rules": [
+        {
+          "id": "POST_01",
+          "stage": "Постоперационный контроль",
+          "conditions": [{ "parameter": "ВГД", "operator": ">", "value": 21, "description": "ВГД > 21 мм рт.ст." }],
+          "action": { "description": "Назначить топические гипотензивные препараты" },
+          "risk_level": "внимание",
+          "description": "Послеоперационная гипертония"
+        },
+        {
+          "id": "POST_02",
+          "stage": "Постоперационный контроль",
+          "conditions": [{ "parameter": "ВГД", "operator": "<", "value": 7, "description": "ВГД < 7 мм рт.ст." }],
+          "action": { "description": "Проверить герметичность, исключить отслойку" },
+          "risk_level": "критическое",
+          "description": "Гипотония"
+        }
+      ]
+    }
+  ]
+}
