@@ -137,13 +137,24 @@
         {
           "id": "POST_01",
           "stage": "Постоперационный контроль",
-          "conditions": [{ "parameter": "ВГД", "operator": ">", "value": 21, "description": "ВГД > 21 мм рт.ст." }],
+          "conditions": [{ "parameter": "ВГД", "operator": ">", "value": 30, "description": "ВГД > 30 мм. рт.ст." }],
+          "action": { "description": "Выполнить парацентез для выпуска жидкости" },
+          "risk_level": "критическое",
+          "description": "Высокая послеоперационная гипертания"
+        },
+        {
+          "id": "POST_02",
+          "stage": "Постоперационный контроль",
+          "conditions": [
+            { "parameter": "ВГД", "operator": ">", "value": 21, "description": "ВГД > 21 мм рт.ст." },
+            { "parameter": "ВГД", "operator": "<=", "value": 30, "description": "ВГД < 30 мм рт.ст." }
+          ],
           "action": { "description": "Назначить топические гипотензивные препараты" },
           "risk_level": "внимание",
           "description": "Послеоперационная гипертония"
         },
         {
-          "id": "POST_02",
+          "id": "POST_03",
           "stage": "Постоперационный контроль",
           "conditions": [{ "parameter": "ВГД", "operator": "<", "value": 7, "description": "ВГД < 7 мм рт.ст." }],
           "action": { "description": "Проверить герметичность, исключить отслойку" },

@@ -24,11 +24,9 @@ def load_rules(engine: DecisionEngine):
             engine.add_rule(rule)
 
 def get_user_parameters(stage_name: str) -> dict:
-    """Интерактивный ввод параметров для выбранного этапа"""
     print(f"\nВведите параметры для этапа: {stage_name}")
     params = {}
     
-    # Разные параметры в зависимости от этапа
     if stage_name == "Анестезия":
         params["боль"] = Parameter("боль", float(input("Оценка боли (0-5): ")))
     

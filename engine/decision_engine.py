@@ -11,14 +11,13 @@ class DecisionEngine:
 
     def add_rule(self, rule: DecisionRule):
         self.rules.append(rule)
-        # Добавляем правило в соответствующий этап
         if rule.stage in self.stages:
             self.stages[rule.stage].rules.append(rule)
 
     def evaluate_stage(self, stage_name: str, parameters: Dict[str, Parameter]) -> List[DecisionResult]:
         results = []
         stage = self.stages.get(stage_name)
-        
+
         if not stage:
             return results
 
@@ -32,22 +31,23 @@ class DecisionEngine:
                     triggered_conditions=[cond.description for cond in rule.conditions]
                 )
                 results.append(result)
-        
+
         return results
 
     def get_recommendation(self, stage_name: str, parameters: Dict[str, Parameter]) -> str:
         results = self.evaluate_stage(stage_name, parameters)
-        
+        recommendations = ""
         if not results:
             return "Статус: НОРМА. Продолжайте операцию по протоколу."
-        
-        # Возвращаем самое критическое
+
         critical = [r for r in results if r.status == "критическое"]
         if critical:
-            return f"КРИТИЧЕСКОЕ: {critical[0].action.description}"
-        
+            for i in range (len(critical)):
+                recommendations += f"КРИТИЧЕСКОЕ: {critical[i].action.description}\n"
+
         attention = [r for r in results if r.status == "внимание"]
         if attention:
-            return f"ВНИМАНИЕ: {attention[0].action.description}"
-        
-        return "Статус: НОРМА. Продолжайте операцию."
+            for i in range (len(attention)):
+                recommendations += f"ВНИМАНИЕ: {attention[i].action.description}\n"
+
+        return recommendations
