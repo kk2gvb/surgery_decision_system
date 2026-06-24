@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional
 from .models import Parameter, DecisionRule, DecisionResult, Action, SurgeryStage
+import streamlit as st
 
 class DecisionEngine:
     def __init__(self):
@@ -34,21 +35,21 @@ class DecisionEngine:
 
         return results
 
-    def get_recommendation(self, stage_name: str, parameters: Dict[str, Parameter]) -> str:
+    def get_recommendation(self, stage_name: str, parameters: Dict[str, Parameter]) -> list:
         results = self.evaluate_stage(stage_name, parameters)
-        recommendations = ""
+        recommendations = []
         if not results:
             return "Статус: НОРМА. Продолжайте операцию по протоколу."
 
         critical = [r for r in results if r.status == "критическое"]
         if critical:
             for i in range (len(critical)):
-                recommendations += f"КРИТИЧЕСКОЕ: {critical[i].action.description}\n"
+                recommendations.append(f"КРИТИЧЕСКОЕ: {critical[i].action.description}\n")
 
         attention = [r for r in results if r.status == "внимание"]
         if attention:
             for i in range (len(attention)):
-                recommendations += f"ВНИМАНИЕ: {attention[i].action.description}\n"
+                recommendations.append(f"ВНИМАНИЕ: {attention[i].action.description}\n")
 
         return recommendations
 

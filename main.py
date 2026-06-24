@@ -103,7 +103,8 @@ def normal_mode(engine):
         params = engine.get_user_parameters(stage_name)
         recommendation = engine.get_recommendation(stage_name, params)
         print(f"\n--- Результат для этапа {stage_name} ---")
-        print(recommendation)
+        for res in recommendation:
+            print(res)
     except Exception as e:
         print(f"Ошибка ввода: {e}")
 
