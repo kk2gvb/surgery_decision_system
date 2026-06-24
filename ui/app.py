@@ -49,8 +49,6 @@ tabs = st.tabs(["Обычная проверка", "Режим Тренажёр�
 
 # ====================== ВКЛАДКА 1: Обычная проверка ======================
 with tabs[0]:
-    engine = DecisionEngine()
-
     st.header("Обычная проверка параметров")
 
     stages = list(st.session_state.engine.stages.keys())
@@ -96,20 +94,102 @@ with tabs[0]:
                 st.warning(res)
             else:
                 st.success(res)
-
 # ====================== ВКЛАДКА 2: Режим Тренажёра ======================
 with tabs[1]:
     st.header("Режим Тренажёра")
-    st.info("Полноценный тренажёр с таймером и статистикой удобнее использовать через консоль (`python main.py`)")
+    
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        num_scenarios = st.slider("Количество сценариев", min_value=5, max_value=15, value=10)
+        use_predefined = st.checkbox("Использовать готовые сценарии", value=True)
+    
+    if st.button("Сгенерировать сценарии", type="primary"):
+        st.session_state.training_scenarios = []
+        st.session_state.user_answers = {}
+        
+        for i in range(num_scenarios):
+            if use_predefined:
+                scenario = st.session_state.generator.get_predefined_scenario()
+            else:
+                scenario = st.session_state.generator.generate_random_scenario()
+            
+            st.session_state.training_scenarios.append(scenario)
+            st.session_state.user_answers[i] = None  # Пока нет ответа
+    
+    # Показываем сценарии
+    if 'training_scenarios' in st.session_state and st.session_state.training_scenarios:
+        st.subheader("Выберите ответы на все сценарии")
+        
+        for i, scenario in enumerate(st.session_state.training_scenarios):
+            with st.expander(f"Сценарий {i+1}", expanded=True):
+                st.write(f"**Этап:** {scenario['stage']}")
+                st.write("**Параметры:**")
+                for k, v in scenario["parameters"].items():
+                    st.write(f"  {k}: **{v}**")
+                
+                # Формируем варианты действий
+                stage = st.session_state.engine.stages.get(scenario["stage"])
+                actions = ["Продолжить без изменений"]
+                if stage:
+                    for rule in stage.rules:
+                        if rule.action.description not in actions:
+                            actions.append(rule.action.description)
+                
+                # Выбор ответа
+                answer = st.radio(
+                    "Ваш выбор:",
+                    options=actions,
+                    key=f"answer_{i}",
+                    horizontal=False
+                )
+                st.session_state.user_answers[i] = answer
+        
+        # Общая кнопка проверки
+        if st.button("Проверить все ответы", type="primary"):
+            correct_count = 0
+            results = []
+            
+            for i, scenario in enumerate(st.session_state.training_scenarios):
+                user_answer = st.session_state.user_answers.get(i)
+                is_correct = user_answer == scenario["correct_action"]
+                
+                if is_correct:
+                    correct_count += 1
+                
+                results.append({
+                    "scenario_num": i+1,
+                    "stage": scenario["stage"],
+                    "user_answer": user_answer,
+                    "correct_answer": scenario["correct_action"],
+                    "is_correct": is_correct,
+                    "explanation": scenario["explanation"]
+                })
+            
+            accuracy = (correct_count / len(st.session_state.training_scenarios)) * 100
+            
+            st.success(f"### Итоги тренировки\nПравильных ответов: **{correct_count}** из **{len(results)}** ({accuracy:.1f}%)")
+            
+            for res in results:
+                if res["is_correct"]:
+                    st.success(f"**Сценарий {res['scenario_num']}** — Правильно")
+                else:
+                    st.error(f"**Сценарий {res['scenario_num']}** — Неверно")
+                    st.info(f"Правильный ответ: **{res['correct_answer']}**")
+                st.caption(f"Пояснение: {res['explanation']}")
+                st.divider()
+    
+    else:
+        st.info("Нажмите кнопку «Сгенерировать сценарии», чтобы начать тренировку.")
 
-# ====================== ВКЛАДКА 4: Все правила ======================
+# ====================== ВКЛАДКА 3: Все правила системы ======================
+
 with tabs[2]:
     st.header("Все правила системы")
     for stage_name, stage in st.session_state.engine.stages.items():
         with st.expander(f"Этап: **{stage_name}**"):
             for rule in stage.rules:
                 st.write(f"**{rule.id}** — {rule.description}")
-                st.write(f"→ **Действие:** {rule.action.description}")
+                st.write(f"**Действие:** {rule.action.description}")
                 st.write(f"Уровень риска: **{rule.risk_level}**")
                 st.divider()
 
