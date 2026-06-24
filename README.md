@@ -1,13 +1,18 @@
 # Как запускать
 ``` shell
-python -m venv venv 
-source /venv/bin/activate (For Linux)
+python -m venv venv
 ```
+For Linux
 ```shell
-venv\Scripts\activate.bat (For cmd)
+source /venv/bin/activate 
 ```
+For cmd
+```shell
+venv\Scripts\activate.bat 
+```
+For PowerShell
 ```cmd
-.\venv\Scripts\Activate.ps1 (For PowerShell)
+.\venv\Scripts\Activate.ps1 
 ```
 ``` shell
 pip install -r requirements.txt
