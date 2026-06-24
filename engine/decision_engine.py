@@ -51,3 +51,32 @@ class DecisionEngine:
                 recommendations += f"ВНИМАНИЕ: {attention[i].action.description}\n"
 
         return recommendations
+
+    def get_user_parameters(self, stage_name: str) -> dict:
+        print(f"\nВведите параметры для этапа: {stage_name}")
+        params = {}
+        
+        if stage_name == "Анестезия":
+            params["боль"] = Parameter("боль", float(input("Оценка боли (0-5): ")))
+        elif stage_name == "Разрез":
+            params["длина_разреза"] = Parameter("длина_разреза", float(input("Длина разреза (мм): ")))
+        elif stage_name == "Капсулорексис":
+            params["диаметр_капсулорексиса"] = Parameter("диаметр_капсулорексиса", float(input("Диаметр капсулорексиса (мм): ")))
+        elif stage_name == "Фрагментация ядра":
+            params["CDE"] = Parameter("CDE", float(input("CDE (кДж): ")), "кДж")
+            params["вакуум"] = Parameter("вакуум", float(input("Вакуум (мм рт.ст.): ")), "мм рт.ст.")
+            params["температура"] = Parameter("температура", float(input("Температура наконечника (°C): ")), "°C")
+        elif stage_name == "Аспирация кортекса":
+            params["вакуум"] = Parameter("вакуум", float(input("Вакуум (мм рт.ст.): ")), "мм рт.ст.")
+            params["разрыв_капсулы"] = Parameter("разрыв_капсулы", input("Есть разрыв капсулы? (да/нет): ").lower() == "да")
+        elif stage_name == "Имплантация ИОЛ":
+            params["ВГД"] = Parameter("ВГД", float(input("ВГД (мм рт.ст.): ")), "мм рт.ст.")
+            params["смещение_ИОЛ"] = Parameter("смещение_ИОЛ", float(input("Смещение ИОЛ (мм): ")), "мм")
+        elif stage_name == "Герметизация":
+            params["seidel_test"] = Parameter("seidel_test", input("Тест Зейделя положительный? (да/нет): ").lower() == "да")
+        elif stage_name == "Постоперационный контроль":
+            params["ВГД"] = Parameter("ВГД", float(input("ВГД (мм рт.ст.): ")), "мм рт.ст.")
+        else:
+            print("Неизвестный этап.")
+        
+        return params
